@@ -51,17 +51,21 @@ import './style.css';
     };
 
     handleChange = (event) => { 
-      this.setState({count: event.target.value});  
+      if(event.target.value <= 1000) {
+        this.setState({count: event.target.value});  
+      } else {
+        event.target.value = 1000;
+      }
     }
   
     render() {
       let { count } = this.state;
       return (
         <div className="app">
-          <div>
+          <div class ="box">
             <div class="buttons">
               <span class="left"><Button title={"-"} action={this.decrementCount} /></span>
-              <input type="number" class="inp" value={this.state.count} onChange={this.handleChange}/>
+              <input type="number" max= "1000" class="inp" value={this.state.count} onChange={this.handleChange}/>
               <span class="right"><Button title={"+"} action={this.incrementCount} /></span>
             </div>
             <span class="cval"><Cval title={"Counter value : " + count} /></span>
