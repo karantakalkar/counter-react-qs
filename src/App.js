@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import './style.css';
 
-  
+  export default class Loader extends Component {
+    render() {
+      return (
+        <span class="load"><div class="loader"></div>&emsp;&emsp; Saving counter value</span>
+      )
+    }
+  }
+
   export default class Button extends Component {
     render() {
       return <button onClick={this.props.action}>{this.props.title}</button>;
@@ -15,19 +22,21 @@ import './style.css';
   }
 
   export default class App extends Component {
+    
     constructor() {
       super();
       this.state = {
-        count: 1
+        count: 1,
+        showLoader: false
       };
 
     }
 
   componentDidMount() {
     fetch(
-      'https://interview-8e4c5-default-rtdb.firebaseio.com/front-end/counter1.json'
+      'https://interview-8e4c5-default-rtdb.firebaseio.com/front-end/karant.json'
     ).then((res) => res.json())
-      .then((data) => {
+     .then((data) => {
         if (data != null) {
           this.setState({
             count: data
@@ -35,9 +44,28 @@ import './style.css';
         }
       });
   }
+
+  setCounter(count) {
+    this.state.showLoader = true;
+    fetch(
+      'https://interview-8e4c5-default-rtdb.firebaseio.com/front-end.json',
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({karant: count})
+      }
+    ).then(() => {
+      this.setState({
+        showLoader:  false
+      });
+    })
+  }
   
     incrementCount = () => {
       if(this.state.count < 1000) {
+        this.setCounter(this.state.count + 1)
         this.setState({
           count: this.state.count + 1
         });
@@ -45,24 +73,28 @@ import './style.css';
     };
   
     decrementCount = () => {
+      this.setCounter(this.state.count - 1)
       this.setState({
         count: this.state.count - 1
       });
     };
 
     handleChange = (event) => { 
-      if(event.target.value <= 1000) {
-        this.setState({count: event.target.value});  
+      if(Number(event.target.value) <= 1000) {
+        this.setCounter(Number(event.target.value))
+        this.setState({count: Number(event.target.value)});  
       } else {
-        event.target.value = 1000;
+        event.target.value = "1000";
       }
     }
   
     render() {
-      let { count } = this.state;
+      let { count, showLoader } = this.state;
       return (
         <div className="app">
-          <div class ="box">
+          <div>
+            {showLoader && <Loader/>}
+            <p></p>
             <div class="buttons">
               <span class="left"><Button title={"-"} action={this.decrementCount} /></span>
               <input type="number" max= "1000" class="inp" value={this.state.count} onChange={this.handleChange}/>
