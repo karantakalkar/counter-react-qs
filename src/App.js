@@ -22,14 +22,16 @@ import './style.css';
   }
 
   export default class App extends Component {
-    
+
+    max = process.env.MAX_VALUE != undefined ? process.env.MAX_VALUE : 1000;
+
+
     constructor() {
       super();
       this.state = {
         count: 1,
         showLoader: false
       };
-
     }
 
   componentDidMount() {
@@ -64,7 +66,7 @@ import './style.css';
   }
   
     incrementCount = () => {
-      if(this.state.count < 1000) {
+      if(this.state.count < this.max) {
         this.setCounter(this.state.count + 1)
         this.setState({
           count: this.state.count + 1
@@ -80,11 +82,11 @@ import './style.css';
     };
 
     handleChange = (event) => { 
-      if(Number(event.target.value) <= 1000) {
+      if(Number(event.target.value) <= this.max) {
         this.setCounter(Number(event.target.value))
         this.setState({count: Number(event.target.value)});  
       } else {
-        event.target.value = "1000";
+        event.target.value = `${this.max}`;
       }
     }
   
@@ -97,7 +99,7 @@ import './style.css';
             <p></p>
             <div class="buttons">
               <span class="left"><Button title={"-"} action={this.decrementCount} /></span>
-              <input type="number" max= "1000" class="inp" value={this.state.count} onChange={this.handleChange}/>
+              <input type="number" max= {this.max} class="inp" value={this.state.count} onChange={this.handleChange}/>
               <span class="right"><Button title={"+"} action={this.incrementCount} /></span>
             </div>
             <span class="cval"><Cval title={"Counter value : " + count} /></span>
